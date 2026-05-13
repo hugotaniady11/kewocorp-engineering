@@ -6,10 +6,12 @@ import {
   createProject,
   updateProject,
   deleteProject,
+  getProjectBySlugHandler,
 } from '../controllers/projects.controller'
 
 export const projectsRoute = new Hono()
 projectsRoute.get('/', getProjects)
+projectsRoute.get('/slug/:slug', getProjectBySlugHandler)
 projectsRoute.get('/:id', authMiddleware, getProjectById)
 projectsRoute.post('/', authMiddleware, createProject)
 projectsRoute.patch('/:id', authMiddleware, updateProject)

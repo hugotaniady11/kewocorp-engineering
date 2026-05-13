@@ -1,134 +1,146 @@
+import { supabase } from '../lib/supabase'
+
 type Project = {
   id: number
   title: string
-  client: string
+  client: string | null
   slug: string
-  description: string
-  image_url: string
-  video_url: string
-  category: string
-  tags: string[]
+  description: string | null
+  image_url: string | null
+  video_url: string | null
+  category: string | null
+  tags: string[] | null
   featured: boolean
   order_index: number
   created_at: string
   updated_at: string
 }
 
-let projects: Project[] = [
-  {
-    id: 1,
-    title: 'Warehouse Expansion',
-    client: 'PT Example Logistics',
-    slug: 'warehouse-expansion',
-    description: 'Industrial expansion project for logistics operations.',
-    image_url: 'https://placehold.co/600x400?text=Project+1',
-    video_url: '',
-    category: 'industrial',
-    tags: ['warehouse', 'logistics'],
-    featured: true,
-    order_index: 1,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    title: 'Corporate Office Build',
-    client: 'PT Example Corporate',
-    slug: 'corporate-office-build',
-    description: 'Office and administration building project.',
-    image_url: 'https://placehold.co/600x400?text=Project+2',
-    video_url: '',
-    category: 'commercial',
-    tags: ['office', 'corporate'],
-    featured: false,
-    order_index: 2,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-]
-
-let nextProjectId = projects.length + 1
-
 export async function getProjects(filters: {
   featured?: boolean
   category?: string
   limit?: number
 } = {}) {
-  let data = [...projects]
+  let query = supabase
+    .from('projects')
+    .select('*')
+    .order('order_index', { ascending: true })
 
   if (filters.featured != null) {
-    data = data.filter((item) => item.featured === filters.featured)
+    query = query.eq('featured', filters.featured)
   }
 
   if (filters.category) {
-    data = data.filter((item) => item.category === filters.category)
+    query = query.eq('category', filters.category)
   }
-
-  data = data.sort((a, b) => a.order_index - b.order_index)
 
   if (filters.limit != null) {
-    data = data.slice(0, filters.limit)
+    query = query.limit(filters.limit)
   }
 
-  return data
+  const { data, error } = await query
+
+  if (error) {
+    throw error
+  }
+
+  return (data ?? []) as Project[]
 }
 
 export async function getProjectById(id: number) {
-  return projects.find((item) => item.id === id) ?? null
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (error) {
+    throw error
+  }
+
+  return (data as Project | null) ?? null
 }
 
 export async function createProject(payload: Record<string, unknown>) {
-  const now = new Date().toISOString()
-
-  const item: Project = {
-    id: nextProjectId++,
+  const insertPayload = {
     title: String(payload.title ?? ''),
-    client: String(payload.client ?? ''),
+    client: payload.client ? String(payload.client) : null,
     slug: String(payload.slug ?? ''),
-    description: String(payload.description ?? ''),
-    image_url: String(payload.image_url ?? ''),
-    video_url: String(payload.video_url ?? ''),
-    category: String(payload.category ?? ''),
+    description: payload.description ? String(payload.description) : null,
+    image_url: payload.image_url ? String(payload.image_url) : null,
+    video_url: payload.video_url ? String(payload.video_url) : null,
+    category: payload.category ? String(payload.category) : null,
     tags: Array.isArray(payload.tags) ? payload.tags.map(String) : [],
     featured: Boolean(payload.featured ?? false),
-    order_index: Number(payload.order_index ?? projects.length + 1),
-    created_at: now,
-    updated_at: now,
+    order_index: Number(payload.order_index ?? 0),
   }
 
-  projects.unshift(item)
-  return item
+  const { data, error } = await supabase
+    .from('projects')
+    .insert(insertPayload)
+    .select()
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  return data as Project
 }
 
 export async function updateProject(id: number, payload: Record<string, unknown>) {
-  const index = projects.findIndex((item) => item.id === id)
-  if (index === -1) return null
-
-  const current = projects[index]
-
-  const updated: Project = {
-    ...current,
-    title: payload.title !== undefined ? String(payload.title) : current.title,
-    client: payload.client !== undefined ? String(payload.client) : current.client,
-    slug: payload.slug !== undefined ? String(payload.slug) : current.slug,
-    description: payload.description !== undefined ? String(payload.description) : current.description,
-    image_url: payload.image_url !== undefined ? String(payload.image_url) : current.image_url,
-    video_url: payload.video_url !== undefined ? String(payload.video_url) : current.video_url,
-    category: payload.category !== undefined ? String(payload.category) : current.category,
-    tags: Array.isArray(payload.tags) ? payload.tags.map(String) : current.tags,
-    featured: payload.featured !== undefined ? Boolean(payload.featured) : current.featured,
-    order_index: payload.order_index !== undefined ? Number(payload.order_index) : current.order_index,
+  const updatePayload: Record<string, unknown> = {
     updated_at: new Date().toISOString(),
   }
 
-  projects[index] = updated
-  return updated
+  if (payload.title !== undefined) updatePayload.title = String(payload.title)
+  if (payload.client !== undefined) updatePayload.client = payload.client ? String(payload.client) : null
+  if (payload.slug !== undefined) updatePayload.slug = String(payload.slug)
+  if (payload.description !== undefined) updatePayload.description = payload.description ? String(payload.description) : null
+  if (payload.image_url !== undefined) updatePayload.image_url = payload.image_url ? String(payload.image_url) : null
+  if (payload.video_url !== undefined) updatePayload.video_url = payload.video_url ? String(payload.video_url) : null
+  if (payload.category !== undefined) updatePayload.category = payload.category ? String(payload.category) : null
+  if (payload.tags !== undefined) updatePayload.tags = Array.isArray(payload.tags) ? payload.tags.map(String) : []
+  if (payload.featured !== undefined) updatePayload.featured = Boolean(payload.featured)
+  if (payload.order_index !== undefined) updatePayload.order_index = Number(payload.order_index)
+
+  const { data, error } = await supabase
+    .from('projects')
+    .update(updatePayload)
+    .eq('id', id)
+    .select()
+    .maybeSingle()
+
+  if (error) {
+    throw error
+  }
+
+  return (data as Project | null) ?? null
 }
 
 export async function deleteProject(id: number) {
-  const index = projects.findIndex((item) => item.id === id)
-  if (index === -1) return false
+  const { error } = await supabase
+    .from('projects')
+    .delete()
+    .eq('id', id)
 
-  projects.splice(index, 1)
+  if (error) {
+    throw error
+  }
+
   return true
+}
+
+export async function getProjectBySlug(slug: string) {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle()
+
+  if (error) {
+    throw error
+  }
+
+  return data ?? null
 }

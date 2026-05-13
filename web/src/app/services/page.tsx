@@ -4,8 +4,8 @@ import { Filter } from 'lucide-react'
 import SectionHeader from '@/components/SectionHeader'
 import ServiceCard from '@/components/ServiceCard'
 import ProjectCard from '@/components/ProjectCard'
-import { SERVICES_DATA, PROJECTS_DATA } from '@/lib/data'
-import type { Project, Service } from '@/lib/types'
+import { getServices } from '@/services/services'
+import { getProjects } from '@/services/projects'
 
 export const metadata: Metadata = {
   title: 'Services',
@@ -15,27 +15,54 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600
 
-// Static only for now — swap with Supabase later
-async function getServicesPageData(): Promise<{ services: Service[]; projects: Project[] }> {
-  return {
-    services: SERVICES_DATA as unknown as Service[],
-    projects: PROJECTS_DATA as unknown as Project[],
+const GRID_PATTERN = `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+
+type Service = {
+  id?: number
+  title: string
+  slug: string
+  description?: string | null
+}
+
+type Project = {
+  id?: number
+  title: string
+  slug: string
+  category?: string | null
+}
+
+type ServicesPageProps = {
+  searchParams?: {
+    category?: string
   }
 }
 
-const GRID_PATTERN = `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+export default async function ServicesPage({ searchParams }: ServicesPageProps) {
+  const selectedCategory = searchParams?.category || 'All'
 
-export default async function ServicesPage() {
-  const { services, projects } = await getServicesPageData()
+  const [services, allProjects] = await Promise.all([
+    getServices(),
+    getProjects(),
+  ])
 
   const categories = [
     'All',
-    ...Array.from(new Set(projects.map((p) => p.category).filter(Boolean))),
+    ...Array.from(
+      new Set(
+        (allProjects as Project[])
+          .map((project) => project.category)
+          .filter(Boolean)
+      )
+    ),
   ] as string[]
+
+  const projects =
+    selectedCategory === 'All'
+      ? (allProjects as Project[])
+      : (allProjects as Project[]).filter((project) => project.category === selectedCategory)
 
   return (
     <>
-      {/* PAGE HERO */}
       <section className="relative min-h-[40vh] bg-kewo-navy flex items-center pt-20">
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: GRID_PATTERN }} />
         <div className="container-default relative z-10 py-16">
@@ -51,23 +78,21 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      {/* SERVICES GRID */}
       <section className="section-padding bg-kewo-light">
         <div className="container-default">
           <SectionHeader eyebrow="What We Offer" title="Our Services" align="center" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mt-10">
-            {services.map((service) => (
+            {(services as Service[]).map((service) => (
               <ServiceCard key={service.id ?? service.slug} service={service} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* SERVICE DETAILS */}
       <section className="section-padding bg-white">
         <div className="container-default">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {services.map((service, i) => (
+            {(services as Service[]).map((service, i) => (
               <div
                 key={service.id ?? service.slug}
                 className="flex gap-5 p-6 border border-gray-100 hover:shadow-md transition-shadow"
@@ -87,7 +112,6 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      {/* PROJECTS */}
       <section id="ourwork" className="section-padding bg-kewo-light">
         <div className="container-default">
           <SectionHeader
@@ -96,24 +120,31 @@ export default async function ServicesPage() {
             subtitle="A selection of our recent engineering projects across electric utilities, public agencies, and private sector clients."
           />
 
-          {/* Category Filter */}
           <div className="flex flex-wrap gap-2 mb-8">
             <div className="flex items-center gap-2 text-xs text-gray-400 uppercase tracking-wider mr-2">
               <Filter size={12} />
               Filter:
             </div>
-            {categories.map((cat) => (
-              <Link
-                key={cat}
-                href={cat === 'All' ? '#ourwork' : `?category=${encodeURIComponent(cat)}#ourwork`}
-                className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider border border-kewo-navy text-kewo-navy hover:bg-kewo-navy hover:text-white transition-all duration-200"
-              >
-                {cat}
-              </Link>
-            ))}
+
+            {categories.map((cat) => {
+              const isActive = cat === selectedCategory
+
+              return (
+                <Link
+                  key={cat}
+                  href={cat === 'All' ? '/services#ourwork' : `/services?category=${encodeURIComponent(cat)}#ourwork`}
+                  className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider border transition-all duration-200 ${
+                    isActive
+                      ? 'bg-kewo-navy text-white border-kewo-navy'
+                      : 'border-kewo-navy text-kewo-navy hover:bg-kewo-navy hover:text-white'
+                  }`}
+                >
+                  {cat}
+                </Link>
+              )
+            })}
           </div>
 
-          {/* Projects Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {projects.map((project) => (
               <ProjectCard key={project.id ?? project.slug} project={project} />
@@ -128,7 +159,6 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="bg-kewo-gold py-12">
         <div className="container-default text-center">
           <h2 className="text-white font-extrabold text-2xl md:text-3xl uppercase tracking-wide mb-4">

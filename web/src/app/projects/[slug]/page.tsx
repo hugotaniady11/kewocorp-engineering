@@ -2,41 +2,67 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { PROJECTS_DATA } from '@/lib/data'
 import type { Metadata } from 'next'
+import { getProjects, getProjectBySlug } from '@/services/projects'
 
 interface Props {
   params: Promise<{ slug: string }>
 }
 
-// Statically generate all project pages at build time
+type Project = {
+  id?: number
+  title: string
+  client?: string | null
+  slug: string
+  description?: string | null
+  image_url?: string | null
+  video_url?: string | null
+  category?: string | null
+  tags?: string[] | null
+}
+
 export async function generateStaticParams() {
-  return PROJECTS_DATA.map((project) => ({
+  const projects = (await getProjects()) as Project[]
+
+  return projects.map((project) => ({
     slug: project.slug,
   }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const project = PROJECTS_DATA.find((p) => p.slug === slug)
-  if (!project) return { title: 'Project Not Found' }
 
-  return {
-    title: project.title,
-    description: project.description ?? undefined,
+  try {
+    const project = (await getProjectBySlug(slug)) as Project | null
+
+    if (!project) {
+      return { title: 'Project Not Found' }
+    }
+
+    return {
+      title: project.title,
+      description: project.description ?? undefined,
+    }
+  } catch {
+    return { title: 'Project Not Found' }
   }
 }
 
 export default async function ProjectDetailPage({ params }: Props) {
   const { slug } = await params
-  const project = PROJECTS_DATA.find((p) => p.slug === slug)
+
+  let project: Project | null = null
+
+  try {
+    project = (await getProjectBySlug(slug)) as Project | null
+  } catch {
+    project = null
+  }
 
   if (!project) notFound()
 
   return (
     <main className="pt-20 min-h-screen bg-white">
-
-      {/* Hero */}
       <div className="bg-kewo-navy py-16">
         <div className="container-default">
           <Link
@@ -52,16 +78,19 @@ export default async function ProjectDetailPage({ params }: Props) {
               {project.category}
             </p>
           )}
+
           <h1 className="text-white font-extrabold text-2xl md:text-4xl uppercase tracking-wide max-w-3xl leading-tight">
             {project.title}
           </h1>
-          <p className="text-gray-400 text-sm mt-3 font-medium">
-            Client: <span className="text-white">{project.client}</span>
-          </p>
+
+          {project.client && (
+            <p className="text-gray-400 text-sm mt-3 font-medium">
+              Client: <span className="text-white">{project.client}</span>
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Media */}
       {(project.image_url || project.video_url) && (
         <div className="container-default py-10">
           <div className="relative aspect-video w-full overflow-hidden bg-kewo-navy max-w-4xl">
@@ -72,6 +101,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 fill
                 className="object-cover"
                 priority
+                unoptimized
               />
             ) : project.video_url ? (
               <video
@@ -86,10 +116,8 @@ export default async function ProjectDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Content */}
       <div className="container-default pb-20">
         <div className="max-w-3xl">
-
           {project.description && (
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
@@ -104,7 +132,6 @@ export default async function ProjectDetailPage({ params }: Props) {
             </div>
           )}
 
-          {/* Tags */}
           {project.tags && project.tags.length > 0 && (
             <div className="mb-8">
               <p className="text-kewo-navy text-xs font-bold uppercase tracking-widest mb-3">

@@ -2,8 +2,6 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { CheckCircle, ChevronDown } from 'lucide-react'
 import SectionHeader from '@/components/SectionHeader'
-import { CERTIFICATIONS_DATA } from '@/lib/data'
-import type { Certification } from '@/lib/types'
 
 export const metadata: Metadata = {
   title: 'About',
@@ -35,6 +33,69 @@ const LICENSES = [
   'Certified General Electrician, #E-179146-G',
 ]
 
+const CERTIFICATIONS = [
+  {
+    name: 'SBE: Small Business Enterprise',
+    number: '#732030',
+    issuer: 'Port of Long Beach',
+  },
+  {
+    name: 'SB Micro: Small Business',
+    number: '#1787885',
+    issuer: 'Department of General Services (DGS OSDS)',
+  },
+  {
+    name: 'SLB: Small Local Business',
+    number: '#SLB-3788',
+    issuer: 'City of Los Angeles',
+  },
+  {
+    name: 'SBE: Small Business Enterprise',
+    number: '#7317',
+    issuer: 'LA Metro',
+  },
+  {
+    name: 'MBE: Micro Business Enterprise',
+    number: '#900085238',
+    issuer: 'LAUSD',
+  },
+  {
+    name: 'DBE: Disadvantaged Business Enterprise',
+    number: '#42281',
+    issuer: 'Caltrans',
+  },
+  {
+    name: 'EDE: Emerging Business Enterprise',
+    number: '#1787885',
+    issuer: 'Department of General Services',
+  },
+  {
+    name: 'LBE: Local Business Enterprise',
+    number: null,
+    issuer: 'City of Los Angeles',
+  },
+  {
+    name: 'MBE: Minority Owned Business Enterprise',
+    number: '#42281',
+    issuer: 'CUCP',
+  },
+  {
+    name: 'VSBE: Very Small Business Enterprise',
+    number: '#1787885',
+    issuer: 'DGS OSDS',
+  },
+  {
+    name: 'DIR: Department of Industrial Relations',
+    number: '#1000027050',
+    issuer: null,
+  },
+  {
+    name: 'EVITP: Electric Vehicle Infrastructure Training Program',
+    number: '#4046696',
+    issuer: null,
+  },
+]
+
 const VALUES = [
   {
     label: 'Our Commitment',
@@ -53,19 +114,11 @@ const VALUES = [
   },
 ]
 
-// Static only for now — swap with Supabase later
-async function getCertifications(): Promise<Certification[]> {
-  return CERTIFICATIONS_DATA as unknown as Certification[]
-}
-
 const GRID_PATTERN = `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
 
 export default async function AboutPage() {
-  const certifications = await getCertifications()
-
   return (
     <>
-      {/* PAGE HERO */}
       <section className="relative min-h-[40vh] bg-kewo-navy flex items-center pt-20">
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: GRID_PATTERN }} />
         <div className="container-default relative z-10 py-16">
@@ -78,7 +131,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* COMPANY OVERVIEW */}
       <section id="about" className="section-padding bg-white">
         <div className="container-default">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -105,13 +157,16 @@ export default async function AboutPage() {
               </div>
             </div>
 
-            {/* Photo placeholder */}
             <div className="relative aspect-[4/3] bg-kewo-navy overflow-hidden rounded">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center text-white/40">
                   <svg className="w-16 h-16 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                    />
                   </svg>
                   <p className="text-xs uppercase tracking-widest">Engineering Excellence</p>
                 </div>
@@ -122,7 +177,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* VALUES */}
       <section className="section-padding bg-kewo-light">
         <div className="container-default">
           <SectionHeader eyebrow="Our Foundation" title="Values" align="center" />
@@ -150,12 +204,9 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* FOUNDER BIO */}
       <section className="section-padding bg-white">
         <div className="container-default">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-
-            {/* Portrait */}
             <div className="lg:col-span-1">
               <div className="sticky top-24">
                 <div className="relative w-48 h-64 mx-auto lg:mx-0 bg-kewo-navy overflow-hidden rounded">
@@ -173,7 +224,6 @@ export default async function AboutPage() {
                   <p className="text-gray-500 text-sm mt-1">Founder &amp; President</p>
                 </div>
 
-                {/* Education */}
                 <div className="mt-6">
                   <h4 className="text-kewo-navy font-bold text-xs uppercase tracking-widest mb-3">Education</h4>
                   <div className="space-y-2">
@@ -188,7 +238,6 @@ export default async function AboutPage() {
               </div>
             </div>
 
-            {/* Bio */}
             <div className="lg:col-span-2">
               <SectionHeader eyebrow="Founder & President" title="Brian B. Kewo, P.E." />
               <div className="space-y-4 text-gray-600 text-sm leading-relaxed">
@@ -228,7 +277,6 @@ export default async function AboutPage() {
                 />
               </div>
 
-              {/* Licenses */}
               <div className="mt-8">
                 <h4 className="text-kewo-navy font-bold text-xs uppercase tracking-widest mb-4">
                   Licenses &amp; Certifications
@@ -247,7 +295,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* CERTIFICATIONS */}
       <section className="section-padding bg-kewo-navy">
         <div className="container-default">
           <div className="text-center mb-8">
@@ -260,19 +307,15 @@ export default async function AboutPage() {
           <SectionHeader eyebrow="Credentials" title="Our Certifications" light align="center" />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-8">
-            {certifications.map((cert) => (
+            {CERTIFICATIONS.map((cert) => (
               <div
-                key={cert.id ?? cert.name}
+                key={cert.name}
                 className="border border-white/10 bg-white/5 hover:bg-white/10 transition-colors p-4"
               >
                 <p className="text-white font-semibold text-sm">{cert.name}</p>
                 <div className="flex gap-3 mt-1">
-                  {cert.number && (
-                    <span className="text-kewo-gold text-xs font-mono">{cert.number}</span>
-                  )}
-                  {cert.issuer && (
-                    <span className="text-gray-400 text-xs">{cert.issuer}</span>
-                  )}
+                  {cert.number && <span className="text-kewo-gold text-xs font-mono">{cert.number}</span>}
+                  {cert.issuer && <span className="text-gray-400 text-xs">{cert.issuer}</span>}
                 </div>
               </div>
             ))}

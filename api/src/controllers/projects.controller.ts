@@ -1,6 +1,7 @@
 import type { Context } from 'hono'
 import { ok, err } from '../lib/response'
 import * as ProjectService from '../services/projects.service'
+import { getProjectBySlug } from '../services/projects.service'
 
 export async function getProjects(c: Context) {
   const featured = c.req.query('featured') === 'true' ? true : undefined
@@ -83,5 +84,25 @@ export async function deleteProject(c: Context) {
     return ok(c, { success: true })
   } catch {
     return err(c, 'Failed to delete project.', 500)
+  }
+}
+
+export async function getProjectBySlugHandler(c: Context) {
+  try {
+    const slug = c.req.param('slug')
+
+    if (!slug) {
+      return err(c, 'Project slug is required.', 400)
+    }
+
+    const project = await getProjectBySlug(slug)
+
+    if (!project) {
+      return err(c, 'Project not found.', 404)
+    }
+
+    return ok(c, project)
+  } catch (e: unknown) {
+    return err(c, e instanceof Error ? e.message : 'Failed to fetch project.', 500)
   }
 }

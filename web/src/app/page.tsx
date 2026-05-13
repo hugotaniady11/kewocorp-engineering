@@ -4,20 +4,32 @@ import HeroSection from '@/components/HeroSection'
 import SectionHeader from '@/components/SectionHeader'
 import ProjectCard from '@/components/ProjectCard'
 import ServiceCard from '@/components/ServiceCard'
-import { getHomeData } from '@/lib/data/home'
-import { CLIENTS } from '@/lib/data'
-import type { Project, Service } from '@/lib/types'
+import { getProjects } from '@/services/projects'
+import { getServices } from '@/services/services'
 
 export const revalidate = 3600
 
+const CLIENTS = [
+  'LADWP',
+  'Pasadena Water and Power',
+  'City of Anaheim',
+  'City of Thousand Oaks',
+  'Metro',
+  'Metrolink',
+  'Cedars Sinai',
+  'Housing Authority City of Los Angeles',
+]
+
 export default async function HomePage() {
-  const { services, featuredProjects } = await getHomeData()
+  const [services, featuredProjects] = await Promise.all([
+    getServices(),
+    getProjects({ featured: true, limit: 4 }),
+  ])
 
   return (
     <>
       <HeroSection />
 
-      {/* ABOUT */}
       <section className="section-padding bg-white">
         <div className="container-default">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -37,7 +49,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* SERVICES */}
       <section className="section-padding bg-kewo-light">
         <div className="container-default">
           <SectionHeader
@@ -47,14 +58,13 @@ export default async function HomePage() {
             align="center"
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mt-10">
-            {services.map((service) => (
+            {services.map((service: any) => (
               <ServiceCard key={service.id ?? service.slug} service={service} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* RECENT PROJECTS */}
       <section id="projects" className="section-padding bg-white">
         <div className="container-default">
           <div className="flex items-end justify-between mb-10">
@@ -68,7 +78,7 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProjects.map((project) => (
+            {featuredProjects.map((project: any) => (
               <ProjectCard key={project.id ?? project.slug} project={project} />
             ))}
           </div>
@@ -80,7 +90,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CLIENTS */}
       <section className="section-padding bg-kewo-navy">
         <div className="container-default">
           <SectionHeader eyebrow="Clients" title="Our Clients" light align="center" />
@@ -97,7 +106,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA BAND */}
       <section className="bg-kewo-gold py-12">
         <div className="container-default text-center">
           <h2 className="text-white font-extrabold text-2xl md:text-3xl uppercase tracking-wide mb-4">
