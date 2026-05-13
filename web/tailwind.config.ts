@@ -10,10 +10,10 @@ const config: Config = {
     extend: {
       colors: {
         kewo: {
-          navy:        '#1C2331',
+          navy:        '#214773',
           'navy-dark':  '#111827',
-          'navy-light': '#2d3748',
-          gold:        '#C8973A',
+          'navy-light': '#2c5d96',
+          gold:        '#b59351',
           'gold-light': '#E5B85A',
           'gold-dark':  '#A07828',
           gray:        '#6B7280',

@@ -31,7 +31,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
         {project.category && (
           <div className="absolute top-3 left-3">
-            <span className="bg-kewo-navy/80 backdrop-blur-sm text-kewo-gold text-xs font-semibold px-2 py-1 uppercase tracking-wider">
+            <span className="bg-kewo-navy-dark/80 backdrop-blur-sm text-kewo-gold-light text-xs font-semibold px-2 py-1 uppercase tracking-wider">
               {project.category}
             </span>
           </div>
