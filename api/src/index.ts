@@ -1,9 +1,9 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
-import { projectsRoute } from './routes/projects.route'
-import { servicesRoute } from './routes/services.route'
-import { authRoute } from './routes/auth.route'
+import { projectsRoute } from './routes/projects.route.js'
+import { servicesRoute } from './routes/services.route.js'
+import { authRoute } from './routes/auth.route.js'
 const app = new Hono().basePath('/api')
 const origins = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3000,http://localhost:3001').split(',')
 
