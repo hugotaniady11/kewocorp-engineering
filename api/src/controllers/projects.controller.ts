@@ -1,7 +1,7 @@
 import type { Context } from 'hono'
-import { ok, err } from '../lib/response'
-import * as ProjectService from '../services/projects.service'
-import { getProjectBySlug } from '../services/projects.service'
+import { ok, err } from '../lib/response.js'
+import * as ProjectService from '../services/projects.service.js'
+import { getProjectBySlug } from '../services/projects.service.js'
 
 export async function getProjects(c: Context) {
   const featured = c.req.query('featured') === 'true' ? true : undefined

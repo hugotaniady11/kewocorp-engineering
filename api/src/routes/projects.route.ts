@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { authMiddleware } from '../middleware/auth.middleware'
+import { authMiddleware } from '../middleware/auth.middleware.js'
 import {
   getProjects,
   getProjectById,
@@ -7,7 +7,7 @@ import {
   updateProject,
   deleteProject,
   getProjectBySlugHandler,
-} from '../controllers/projects.controller'
+} from '../controllers/projects.controller.js'
 
 export const projectsRoute = new Hono()
 projectsRoute.get('/', getProjects)

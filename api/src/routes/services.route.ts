@@ -1,12 +1,12 @@
 import { Hono } from 'hono'
-import { authMiddleware } from '../middleware/auth.middleware'
+import { authMiddleware } from '../middleware/auth.middleware.js'
 import {
   getServices,
   getServiceById,
   createService,
   updateService,
   deleteService,
-} from '../controllers/services.controller'
+} from '../controllers/services.controller.js'
 
 export const servicesRoute = new Hono()
 servicesRoute.get('/', getServices)

@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
-import { ok, err } from '../lib/response'
-import * as AuthService from '../services/auth.service'
+import { ok, err } from '../lib/response.js'
+import * as AuthService from '../services/auth.service.js'
 
 export async function login(c: Context) {
   try {

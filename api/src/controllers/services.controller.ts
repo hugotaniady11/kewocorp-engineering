@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
-import { ok, err } from '../lib/response'
-import * as ServiceService from '../services/services.service'
+import { ok, err } from '../lib/response.js'
+import * as ServiceService from '../services/services.service.js'
 
 export async function getServices(c: Context) {
   try {
