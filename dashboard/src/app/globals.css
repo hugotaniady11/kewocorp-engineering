@@ -1,0 +1,60 @@
+/* stylelint-disable at-rule-no-unknown */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans text-gray-800 antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+
+  .container-default {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-kewo-gold hover:bg-kewo-gold-light
+           text-white font-semibold px-8 py-3
+           uppercase tracking-widest text-sm transition-all duration-200;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border-2 border-kewo-navy
+           hover:bg-kewo-navy hover:text-white text-kewo-navy
+           font-semibold px-8 py-3 uppercase tracking-widest text-sm
+           transition-all duration-200;
+  }
+
+  .btn-outline-light {
+    @apply inline-flex items-center gap-2 border-2 border-white
+           hover:bg-white hover:text-kewo-navy text-white
+           font-semibold px-8 py-3 uppercase tracking-widest text-sm
+           transition-all duration-200;
+  }
+
+  .gold-accent-line {
+    @apply block h-1 w-12 bg-kewo-gold mt-4;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb {
+  background: theme('colors.kewo.gold');
+  border-radius: 3px;
+}
