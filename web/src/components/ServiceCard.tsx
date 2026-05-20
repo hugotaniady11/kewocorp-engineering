@@ -1,7 +1,14 @@
 import { Zap, HardHat, ClipboardList, GraduationCap, ShieldCheck } from 'lucide-react'
 import type { LucideProps } from 'lucide-react'
 import type { ForwardRefExoticComponent, RefAttributes } from 'react'
-import type { Service } from '@/lib/types'
+
+interface Service {
+  id?: number
+  title: string
+  slug?: string
+  description?: string | null
+  icon?: string | null
+}
 
 type LucideIcon = ForwardRefExoticComponent<LucideProps & RefAttributes<SVGSVGElement>>
 
