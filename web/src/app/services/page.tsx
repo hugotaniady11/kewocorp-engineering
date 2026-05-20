@@ -67,8 +67,8 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: GRID_PATTERN }} />
         <div className="container-default relative z-10 py-16">
           <div className="flex items-center gap-3 mb-3">
-            <div className="h-0.5 w-8 bg-kewo-gold" />
-            <span className="text-kewo-gold text-xs font-bold tracking-[0.3em] uppercase">What We Offer</span>
+            <div className="h-0.5 w-8 bg-white" />
+            <span className="text-white text-xs font-bold tracking-[0.3em] uppercase">What We Offer</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-white uppercase tracking-wide">Services</h1>
           <p className="text-gray-300 mt-3 max-w-xl text-sm">
@@ -97,7 +97,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
                 key={service.id ?? service.slug}
                 className="flex gap-5 p-6 border border-gray-100 hover:shadow-md transition-shadow"
               >
-                <div className="w-10 h-10 bg-kewo-gold rounded flex items-center justify-center flex-shrink-0 text-white font-extrabold text-sm">
+                <div className="w-10 h-10 bg-kewo-navy rounded flex items-center justify-center flex-shrink-0 text-white font-extrabold text-sm">
                   {String(i + 1).padStart(2, '0')}
                 </div>
                 <div>
@@ -159,7 +159,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
         </div>
       </section>
 
-      <section className="bg-kewo-gold py-12">
+      <section className="bg-kewo-navy py-12">
         <div className="container-default text-center">
           <h2 className="text-white font-extrabold text-2xl md:text-3xl uppercase tracking-wide mb-4">
             Have a Project in Mind?
@@ -169,7 +169,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
           </p>
           <a
             href="mailto:brian.kewo@kewocorp.com"
-            className="inline-flex items-center gap-2 bg-kewo-navy hover:bg-kewo-navy-dark text-white font-semibold px-8 py-3 uppercase tracking-widest text-sm transition-all duration-200"
+            className="btn-outline-light group"
           >
             Contact Us
           </a>

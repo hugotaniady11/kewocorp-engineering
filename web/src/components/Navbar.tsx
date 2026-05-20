@@ -46,7 +46,7 @@ export default function Navbar() {
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled
           ? 'bg-kewo-navy/95 backdrop-blur-sm shadow-lg'
-          : 'bg-kewo-navy'
+          : 'bg-kewo-navy/1'
       )}
     >
       <div className="container-default">
@@ -56,29 +56,30 @@ export default function Navbar() {
           <Link href="/" className="flex-shrink-0">
             <div className="flex flex-col leading-tight">
               <span className="text-white font-bold text-lg tracking-wider uppercase">KEWO</span>
-              <span className="text-kewo-gold text-xs font-semibold tracking-[0.2em] uppercase">Engineering</span>
+              <span className="text-white text-xs font-semibold tracking-[0.2em] uppercase">Engineering</span>
             </div>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-1">
+          <nav className="hidden md:flex h-full items-stretch space-x-1">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
                 href={parseLinkHref(item.href)}
                 className={clsx(
-                  'px-4 py-2 text-sm font-medium tracking-wide transition-colors duration-200 uppercase',
+                  'relative inline-flex h-full items-center px-4 text-sm font-medium tracking-wide uppercase transition-colors duration-200',
                   isNavItemActive(item.href, pathname)
-                    ? 'text-kewo-gold'
+                    ? 'text-white before:absolute before:top-0 before:left-1/2 before:h-0.5 before:w-10 before:-translate-x-1/2 before:bg-white before:content-[""]'
                     : 'text-gray-300 hover:text-white'
                 )}
               >
                 {item.label}
               </Link>
             ))}
+
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="ml-2 p-2 text-gray-300 hover:text-white transition-colors"
+              className="ml-2 inline-flex h-full items-center p-2 text-gray-300 transition-colors hover:text-white"
               aria-label="Toggle search"
             >
               <Search size={18} />

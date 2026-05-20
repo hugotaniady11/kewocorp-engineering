@@ -21,11 +21,11 @@ export default function SectionHeader({
     <div className={clsx('mb-10', isCentered && 'text-center')}>
       {eyebrow && (
         <div className={clsx('flex items-center gap-3 mb-3', isCentered && 'justify-center')}>
-          {!isCentered && <div className="h-0.5 w-8 bg-kewo-gold" />}
-          <span className="text-kewo-gold text-xs font-bold uppercase tracking-[0.3em]">
+          {!isCentered && <div className="h-0.5 w-8 bg-kewo-navy" />}
+          <span className="text-kewo-navy text-xs font-bold uppercase tracking-[0.3em]">
             {eyebrow}
           </span>
-          {isCentered && <div className="h-0.5 w-8 bg-kewo-gold" />}
+          {isCentered && <div className="h-0.5 w-8 bg-kewo-navy" />}
         </div>
       )}
       <h2

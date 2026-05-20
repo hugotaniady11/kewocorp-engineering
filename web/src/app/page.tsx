@@ -71,7 +71,7 @@ export default async function HomePage() {
             <SectionHeader eyebrow="Recent Projects" title="Recent Projects" />
             <Link
               href="/services#ourwork"
-              className="hidden sm:inline-flex items-center gap-2 text-kewo-navy hover:text-kewo-gold text-sm font-semibold uppercase tracking-wider transition-colors group"
+              className="hidden sm:inline-flex items-center gap-2 text-kewo-navy hover:text-kewo-navy-light text-sm font-semibold uppercase tracking-wider transition-colors group"
             >
               View All Work
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
@@ -106,18 +106,18 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-kewo-gold py-12">
+      <section className="bg-white py-12">
         <div className="container-default text-center">
-          <h2 className="text-white font-extrabold text-2xl md:text-3xl uppercase tracking-wide mb-4">
+          <h2 className="text-kewo-navy font-extrabold text-2xl md:text-3xl uppercase tracking-wide mb-4">
             Ready to Start Your Next Project?
           </h2>
-          <p className="text-white/80 mb-6 max-w-xl mx-auto text-sm">
+          <p className="text-kewo-navy/80 mb-6 max-w-xl mx-auto text-sm">
             Contact us today to discuss how Kewo Engineering can deliver world-class solutions
             for your electric power needs.
           </p>
           <a
             href="mailto:brian.kewo@kewocorp.com"
-            className="inline-flex items-center gap-2 bg-kewo-navy hover:bg-kewo-navy-dark text-white font-semibold px-8 py-3 uppercase tracking-widest text-sm transition-all duration-200"
+            className="inline-flex items-center gap-2 bg-kewo-navy hover:bg-kewo-navy-light text-white font-semibold px-8 py-3 uppercase tracking-widest text-sm transition-all duration-200"
           >
             Get In Touch
           </a>
@@ -130,19 +130,19 @@ export default async function HomePage() {
 function IeeeAwardCard() {
   return (
     <div className="bg-kewo-navy text-white p-8 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-24 h-24 bg-kewo-gold/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
       <div className="relative z-10 flex gap-5 items-start">
-        <div className="w-14 h-14 bg-kewo-gold rounded-full flex items-center justify-center flex-shrink-0">
-          <Award size={24} className="text-white" />
+        <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+          <Award size={24} className="text-kewo-navy" />
         </div>
         <div>
-          <p className="text-kewo-gold text-xs font-bold uppercase tracking-widest mb-2">
+          <p className="text-kewo-white text-xs font-bold uppercase tracking-widest mb-2">
             IEEE Region 6 Award
           </p>
           <p className="text-white font-semibold leading-relaxed">
             Kewo Engineering is a recipient of the{' '}
-            <strong className="text-kewo-gold">IEEE Region 6 Award</strong> for{' '}
-            <strong className="text-kewo-gold">&ldquo;Outstanding Corporate Service&rdquo;</strong>
+            <strong className="text-kewo-white">IEEE Region 6 Award</strong> for{' '}
+            <strong className="text-kewo-white">&ldquo;Outstanding Corporate Service&rdquo;</strong>
           </p>
         </div>
       </div>

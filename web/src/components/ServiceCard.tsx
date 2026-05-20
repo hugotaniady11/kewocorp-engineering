@@ -36,10 +36,10 @@ export default function ServiceCard({ service, variant = 'default' }: ServiceCar
 
   return (
     <div className="bg-white border border-gray-100 p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
-      <div className="w-12 h-12 bg-kewo-navy rounded flex items-center justify-center mb-4 group-hover:bg-kewo-gold transition-colors duration-300">
-        <Icon size={22} className="text-kewo-gold group-hover:text-white transition-colors duration-300" />
+      <div className="w-12 h-12 bg-kewo-navy rounded flex items-center justify-center mb-4 group-hover:bg-kewo-navy transition-colors duration-300">
+        <Icon size={22} className="text-white group-hover:text-white transition-colors duration-300" />
       </div>
-      <h3 className="text-kewo-navy font-bold text-base mb-2 group-hover:text-kewo-gold transition-colors">
+      <h3 className="text-kewo-navy font-bold text-base mb-2 group-hover:text-kewo-navy transition-colors">
         {service.title}
       </h3>
       {service.description && (

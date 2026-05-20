@@ -31,7 +31,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
         {project.category && (
           <div className="absolute top-3 left-3">
-            <span className="bg-kewo-navy-dark/80 backdrop-blur-sm text-kewo-gold-light text-xs font-semibold px-2 py-1 uppercase tracking-wider">
+            <span className="bg-kewo-navy-dark/80 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 uppercase tracking-wider">
               {project.category}
             </span>
           </div>
@@ -40,10 +40,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
       {/* Content */}
       <div className="p-5">
-        <p className="text-kewo-gold text-xs font-bold uppercase tracking-widest mb-1">
+        <p className="text-kewo-navy text-xs font-bold uppercase tracking-widest mb-1">
           {project.client}
         </p>
-        <h3 className="text-kewo-navy font-semibold text-sm leading-snug line-clamp-2 mb-3 group-hover:text-kewo-gold transition-colors">
+        <h3 className="text-kewo-navy font-semibold text-sm leading-snug line-clamp-2 mb-3 group-hover:text-kewo-navy-light transition-colors">
           {project.title}
         </h3>
         {project.description && (
@@ -53,7 +53,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         )}
         <Link
           href={`/projects/${project.slug}`}
-          className="inline-flex items-center gap-1 text-kewo-navy hover:text-kewo-gold text-xs font-semibold uppercase tracking-wider transition-colors group/link"
+          className="inline-flex items-center gap-1 text-kewo-navy hover:text-kewo-navy-light text-xs font-semibold uppercase tracking-wider transition-colors group/link"
         >
           View Project
           <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
@@ -80,7 +80,7 @@ function VideoThumbnail({ src }: { src: string }) {
         <source src={src} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-        <div className="w-12 h-12 rounded-full bg-kewo-gold/80 flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full bg-kewo-light/80 flex items-center justify-center">
           <svg className="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />
           </svg>
@@ -94,8 +94,8 @@ function PlaceholderThumbnail() {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
       <div className="text-center px-4">
-        <div className="w-16 h-16 mx-auto mb-3 border-2 border-kewo-gold/40 rounded-full flex items-center justify-center">
-          <svg className="w-8 h-8 text-kewo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-16 h-16 mx-auto mb-3 border-2 border-kewo-light/40 rounded-full flex items-center justify-center">
+          <svg className="w-8 h-8 text-kewo-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
               d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>

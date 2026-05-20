@@ -123,8 +123,8 @@ export default async function AboutPage() {
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: GRID_PATTERN }} />
         <div className="container-default relative z-10 py-16">
           <div className="flex items-center gap-3 mb-3">
-            <div className="h-0.5 w-8 bg-kewo-gold" />
-            <span className="text-kewo-gold text-xs font-bold tracking-[0.3em] uppercase">Kewo Engineering</span>
+            <div className="h-0.5 w-8 bg-white" />
+            <span className="text-white text-xs font-bold tracking-[0.3em] uppercase">Kewo Engineering</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-white uppercase tracking-wide">About Us</h1>
           <p className="text-gray-300 mt-3 max-w-xl text-sm">Delivering World-Class Engineering Solutions</p>
@@ -171,7 +171,7 @@ export default async function AboutPage() {
                   <p className="text-xs uppercase tracking-widest">Engineering Excellence</p>
                 </div>
               </div>
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-kewo-gold" />
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-kewo-navy" />
             </div>
           </div>
         </div>
@@ -186,10 +186,10 @@ export default async function AboutPage() {
                 key={i}
                 className="bg-white border border-gray-100 p-8 hover:shadow-lg transition-all duration-300 group"
               >
-                <div className="w-10 h-10 bg-kewo-navy group-hover:bg-kewo-gold rounded flex items-center justify-center mb-5 transition-colors duration-300">
+                <div className="w-10 h-10 bg-kewo-navy group-hover:bg-kewo-navy-light rounded flex items-center justify-center mb-5 transition-colors duration-300">
                   <span className="text-white font-extrabold text-sm">{String(i + 1).padStart(2, '0')}</span>
                 </div>
-                <p className="text-kewo-gold text-xs font-bold uppercase tracking-widest mb-1">{v.label}</p>
+                <p className="text-kewo-navy text-xs font-bold uppercase tracking-widest mb-1">{v.label}</p>
                 <h3 className="text-kewo-navy font-bold text-base mb-3 italic">{v.tagline}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{v.body}</p>
               </div>
@@ -220,7 +220,7 @@ export default async function AboutPage() {
                 </div>
                 <div className="mt-4 text-center lg:text-left">
                   <h3 className="text-kewo-navy font-extrabold text-lg">Brian B. Kewo</h3>
-                  <p className="text-kewo-gold text-xs font-bold uppercase tracking-widest">P.E., CISSP, CISM, PMP, CCM</p>
+                  <p className="text-kewo-navy text-xs font-bold uppercase tracking-widest">P.E., CISSP, CISM, PMP, CCM</p>
                   <p className="text-gray-500 text-sm mt-1">Founder &amp; President</p>
                 </div>
 
@@ -284,7 +284,7 @@ export default async function AboutPage() {
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                   {LICENSES.map((lic, i) => (
                     <li key={i} className="flex items-start gap-2 text-xs text-gray-600">
-                      <CheckCircle size={12} className="text-kewo-gold mt-0.5 flex-shrink-0" />
+                      <CheckCircle size={12} className="text-kewo-navy mt-0.5 flex-shrink-0" />
                       {lic}
                     </li>
                   ))}
@@ -298,7 +298,7 @@ export default async function AboutPage() {
       <section className="section-padding bg-kewo-navy">
         <div className="container-default">
           <div className="text-center mb-8">
-            <p className="text-kewo-gold font-bold text-xs uppercase tracking-widest mb-2">Recognition</p>
+            <p className="text-white font-bold text-xs uppercase tracking-widest mb-2">Recognition</p>
             <p className="text-white text-base font-semibold">
               &ldquo;In 2019, Kewo Engineering received the 2019 IEEE Region 6 Award for Outstanding Corporate Service.&rdquo;
             </p>
@@ -314,7 +314,7 @@ export default async function AboutPage() {
               >
                 <p className="text-white font-semibold text-sm">{cert.name}</p>
                 <div className="flex gap-3 mt-1">
-                  {cert.number && <span className="text-kewo-gold text-xs font-mono">{cert.number}</span>}
+                  {cert.number && <span className="text-white text-xs font-mono">{cert.number}</span>}
                   {cert.issuer && <span className="text-gray-400 text-xs">{cert.issuer}</span>}
                 </div>
               </div>
@@ -333,7 +333,7 @@ function BioAccordion({ title, content }: { title: string; content: string }) {
         <span className="text-kewo-navy font-bold text-sm">{title}</span>
         <ChevronDown
           size={16}
-          className="text-kewo-gold group-open:rotate-180 transition-transform duration-200"
+          className="text-white group-open:rotate-180 transition-transform duration-200"
         />
       </summary>
       <div className="px-4 pb-4">
