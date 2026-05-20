@@ -54,10 +54,15 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
-            <div className="flex flex-col leading-tight">
-              <span className="text-white font-bold text-lg tracking-wider uppercase">KEWO</span>
-              <span className="text-white text-xs font-semibold tracking-[0.2em] uppercase">Engineering</span>
-            </div>
+            <img
+              src={
+                isScrolled
+                  ? 'https://kewocorp.com/wp-content/uploads/2019/02/Logo-KEC-white-32px.png'
+                  : 'https://kewocorp.com/wp-content/uploads/2019/02/Logo-KEC-white-100px-200x52.png'
+              }
+              alt="KEWO Engineering"
+              className="h-8 lg:h-10 w-auto transition-all duration-300"
+            />
           </Link>
 
           {/* Desktop Nav */}

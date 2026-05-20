@@ -133,8 +133,8 @@ export default async function AboutPage() {
 
       <section id="about" className="section-padding bg-white">
         <div className="container-default">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            <div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:items-stretch">
+            <div className="flex flex-col justify-center">
               <SectionHeader eyebrow="Who We Are" title="Kewo Engineering Corporation" />
               <div className="space-y-4 text-gray-600 text-sm leading-relaxed">
                 <p>
@@ -157,21 +157,14 @@ export default async function AboutPage() {
               </div>
             </div>
 
-            <div className="relative aspect-[4/3] bg-kewo-navy overflow-hidden rounded">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-white/40">
-                  <svg className="w-16 h-16 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                  <p className="text-xs uppercase tracking-widest">Engineering Excellence</p>
-                </div>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-kewo-navy" />
+            <div className="relative min-h-[320px] h-full overflow-hidden rounded bg-kewo-navy">
+              <img
+                src="https://kewocorp.com/wp-content/uploads/2020/08/Webp.net-compress-image-3.jpg"
+                alt="KEWO Engineering project"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-kewo-navy/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-kewo-gold" />
             </div>
           </div>
         </div>
@@ -295,33 +288,88 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="section-padding bg-kewo-navy">
+      <section className="section-padding bg-kewo-navy-dark">
         <div className="container-default">
-          <div className="text-center mb-8">
+          <div className="text-center">
             <p className="text-white font-bold text-xs uppercase tracking-widest mb-2">Recognition</p>
-            <p className="text-white text-base font-semibold">
-              &ldquo;In 2019, Kewo Engineering received the 2019 IEEE Region 6 Award for Outstanding Corporate Service.&rdquo;
+            <p className="text-white text-base font-semibold italic">
+              &ldquo;Our mission is to build infrastructure through quality engineering and build lives through well-paying jobs.&rdquo;
             </p>
-          </div>
-
-          <SectionHeader eyebrow="Credentials" title="Our Certifications" light align="center" />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-8">
-            {CERTIFICATIONS.map((cert) => (
-              <div
-                key={cert.name}
-                className="border border-white/10 bg-white/5 hover:bg-white/10 transition-colors p-4"
-              >
-                <p className="text-white font-semibold text-sm">{cert.name}</p>
-                <div className="flex gap-3 mt-1">
-                  {cert.number && <span className="text-white text-xs font-mono">{cert.number}</span>}
-                  {cert.issuer && <span className="text-gray-400 text-xs">{cert.issuer}</span>}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
+
+      <section className="section-padding bg-white">
+        <div className="container-default">
+          <SectionHeader eyebrow="Credentials" title="Our Certifications" align="center" />
+          <div className="text-center mb-2">
+            <p className="text-kewo-navy text-base font-semibold">
+              &ldquo;In 2019, Kewo Engineering received the 2019 IEEE Region 6 Award for Outstanding Corporate Service.&rdquo;
+            </p>
+          </div>
+          <div className="mt-6 mb-8 flex flex-wrap items-center justify-center gap-6 md:gap-8">
+            {[
+              { name: 'PE Electrical', src: 'https://kewocorp.com/wp-content/uploads/2020/08/badge-pe-electrical.png' },
+              { name: 'CISM', src: 'https://kewocorp.com/wp-content/uploads/2020/08/badge-cism.png' },
+              { name: 'CISSP', src: 'https://kewocorp.com/wp-content/uploads/2020/08/badge-cissp.png' },
+              { name: 'PMP', src: 'https://kewocorp.com/wp-content/uploads/2020/08/badge-pmp.png' },
+              { name: 'CCM', src: 'https://kewocorp.com/wp-content/uploads/2020/08/badge-ccm.png' },
+              { name: 'CSLB', src: 'https://kewocorp.com/wp-content/uploads/2020/11/cslb-logo-2-400x410.png' },
+            ].map((logo) => (
+              <div
+                key={logo.name}
+                className="md:h-20 md:w-20 flex items-center justify-center overflow-hidden"
+              >
+                {logo.src ? (
+                  <img
+                    src={logo.src}
+                    alt={logo.name}
+                    className="h-full w-full object-contain p-2"
+                  />
+                ) : (
+                  <span className="text-[10px] text-gray-400 uppercase tracking-widest text-center">
+                    {logo.name}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
+            {/* Left big image */}
+            <div className="justify-self-start bg-gray-50 border border-gray-200 p-3">
+              <div className="h-[320px] w-full overflow-hidden bg-white flex items-center justify-center">
+                <img
+                  src="https://kewocorp.com/wp-content/uploads/2020/08/KEWO-IEEE-Region-6-Award-mock-up-2-comp.jpg"
+                  alt="Certification"
+                  className="block h-full w-full object-contain object-top-left"
+                />
+              </div>
+            </div>
+
+            {/* Right list */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {CERTIFICATIONS.map((cert) => (
+                <div
+                  key={cert.name}
+                  className="border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors p-4"
+                >
+                  <p className="text-kewo-navy font-semibold text-sm">{cert.name}</p>
+                  <div className="flex gap-3 mt-1">
+                    {cert.number && (
+                      <span className="text-gray-700 text-xs font-mono">{cert.number}</span>
+                    )}
+                    {cert.issuer && (
+                      <span className="text-gray-500 text-xs">{cert.issuer}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
     </>
   )
 }
