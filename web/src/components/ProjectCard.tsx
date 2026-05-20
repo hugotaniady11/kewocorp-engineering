@@ -3,7 +3,17 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
-import type { Project } from '@/lib/types'
+
+interface Project {
+  id: string
+  title: string
+  slug: string
+  client?: string
+  description?: string
+  image_url?: string
+  video_url?: string
+  category?: string
+}
 
 interface ProjectCardProps {
   project: Project

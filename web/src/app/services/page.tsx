@@ -25,10 +25,14 @@ type Service = {
 }
 
 type Project = {
-  id?: number
+  id: string
   title: string
   slug: string
-  category?: string | null
+  client?: string
+  description?: string
+  image_url?: string
+  video_url?: string
+  category?: string
 }
 
 type ServicesPageProps = {
@@ -133,11 +137,10 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
                 <Link
                   key={cat}
                   href={cat === 'All' ? '/services#ourwork' : `/services?category=${encodeURIComponent(cat)}#ourwork`}
-                  className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider border transition-all duration-200 ${
-                    isActive
+                  className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider border transition-all duration-200 ${isActive
                       ? 'bg-kewo-navy text-white border-kewo-navy'
                       : 'border-kewo-navy text-kewo-navy hover:bg-kewo-navy hover:text-white'
-                  }`}
+                    }`}
                 >
                   {cat}
                 </Link>
