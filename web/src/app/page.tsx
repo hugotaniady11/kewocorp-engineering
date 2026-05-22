@@ -6,18 +6,128 @@ import ProjectCard from '@/components/ProjectCard'
 import ServiceCard from '@/components/ServiceCard'
 import { getProjects } from '@/services/projects'
 import { getServices } from '@/services/services'
+import clsx from 'clsx'
 
 export const revalidate = 3600
 
 const CLIENTS = [
-  'LADWP',
-  'Pasadena Water and Power',
-  'City of Anaheim',
-  'City of Thousand Oaks',
-  'Metro',
-  'Metrolink',
-  'Cedars Sinai',
-  'Housing Authority City of Los Angeles',
+  {
+    name: 'LADWP',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-LADWP.png',
+  },
+  {
+    name: 'AECOM',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-aecom.png',
+  },
+  {
+    name: 'HATCH',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-hatch.png',
+  },
+  {
+    name: 'ARUP',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-arup.png',
+  },
+  {
+    name: 'PRESIDIO',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-presidio.png',
+  },
+  {
+    name: 'PORT OF LOS ANGELES',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-port-of-LA.png',
+  },
+  {
+    name: 'HACLA',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-HACLA.png',
+  },
+  {
+    name: 'PORT OF LOS ANGELES',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-port-of-LA.png',
+  },
+  {
+    name: 'CITY OF ANAHEIM',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-city-of-anaheim.png',
+  },
+  {
+    name: 'CITY OF RIVERSIDE PUBLIC UTILITIES',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-city-of-riverside-public-utilities.png',
+  },
+  {
+    name: 'WSP',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-wsp.png',
+  },
+  {
+    name: 'MMR',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-mmr.png',
+  },
+  {
+    name: 'HDR',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-hdr.png',
+  },
+  {
+    name: 'KTR',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-ktr.png',
+  },
+  {
+    name: 'LAWA',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-lawa.png',
+  },
+  {
+    name: 'DH GREEN ENERGY',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-dhgreenenergy.png',
+  },
+  {
+    name: 'FOOTHILL GOLDLINE',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-Foothill_Goldline.png',
+  },
+  {
+    name: 'METROLINK',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/Metrolink_logo.png',
+  },
+  {
+    name: 'HOLLYWOOD BURBANK AIRPORT',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-Hollywood-Burbank-Airport.png',
+  },
+  {
+    name: 'FENIX',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-fenix.png',
+  },
+  {
+    name: 'SVUSD',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-sonoma-valley-unified-school-district.png',
+  },
+  {
+    name: 'PASADENA WATER AND POWER',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-pasadena-water-and-power-copy.png',
+  },
+  {
+    name: 'PORT OF LONG BEACH',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-port-of-long-beach.png',
+  },
+  {
+    name: 'METRO',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-la-metro-2.png',
+  },
+  {
+    name: 'CITY OF SAN DIEGO',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-city-of-san-diego.png',
+  },
+  {
+    name: 'DNV GL',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-dnvgl.png',
+  },
+  {
+    name: 'TBEA',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-tbea.png',
+  },
+  {
+    name: 'KS DRILLING',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-ks-drilling.png',
+  },
+  {
+    name: 'TYLIN',
+    logo: 'https://kewocorp.com/wp-content/uploads/2020/09/logo-tylin-2.png',
+  },
+
 ]
 
 export default async function HomePage() {
@@ -90,17 +200,21 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding bg-kewo-navy">
+      <section className="section-padding bg-kewo-light">
         <div className="container-default">
-          <SectionHeader eyebrow="Clients" title="Our Clients" light align="center" />
-          <div className="flex flex-wrap justify-center gap-3 mt-8">
+          <SectionHeader eyebrow="Clients" title="Our Clients" align="center" />
+          <div className="mt-8 flex flex-wrap justify-center gap-y-6">
             {CLIENTS.map((client) => (
-              <span
-                key={client}
-                className="border border-white/20 text-white/70 hover:text-kewo-gold hover:border-kewo-gold/40 px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-default"
+              <div
+                key={client.name}
+                className="flex h-16 w-1/2 items-center justify-center sm:w-1/3 lg:w-1/5"
               >
-                {client}
-              </span>
+                <img
+                  src={client.logo}
+                  alt={client.name}
+                  className="max-h-16 w-auto object-contain opacity-90 transition-opacity duration-200 hover:opacity-100"
+                />
+              </div>
             ))}
           </div>
         </div>
