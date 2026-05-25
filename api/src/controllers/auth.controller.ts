@@ -19,10 +19,13 @@ export async function login(c: Context) {
 
 export async function logout(c: Context) {
   try {
-    await AuthService.signOut()
+    const token = c.req.header('Authorization')?.replace('Bearer ', '')
+    if (!token) return err(c, 'Unauthorized', 401)
+
+    await AuthService.signOut(token)
     return ok(c, { success: true })
-  } catch {
-    return err(c, 'Logout failed.', 500)
+  } catch (e: unknown) {
+    return err(c, e instanceof Error ? e.message : 'Logout failed.', 500)
   }
 }
 

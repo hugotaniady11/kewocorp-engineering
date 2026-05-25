@@ -12,18 +12,20 @@ interface RegisterData {
 }
 
 interface AuthResponse {
-  token: string
   user?: {
-    id: number
+    id: string | number
     email: string
-    username: string
+    username?: string
   }
+  access_token?: string
+  message?: string
 }
 
 export async function login(data: LoginData): Promise<AuthResponse> {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+  const response = await fetch(`${API_BASE_URL}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(data),
   })
 
@@ -36,9 +38,10 @@ export async function login(data: LoginData): Promise<AuthResponse> {
 }
 
 export async function register(data: RegisterData): Promise<AuthResponse> {
-  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+  const response = await fetch(`${API_BASE_URL}/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
     body: JSON.stringify(data),
   })
 
@@ -50,13 +53,22 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
   return response.json()
 }
 
+export async function logout() {
+  const response = await fetch(`${API_BASE_URL}/logout`, {
+    method: 'POST',
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error('Logout failed')
+  }
+
+  return response.json()
+}
+
 export async function getProfile() {
-  const token = localStorage.getItem('auth_token')
-  
-  const response = await fetch(`${API_BASE_URL}/auth/profile`, {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
+  const response = await fetch(`${API_BASE_URL}/profile`, {
+    credentials: 'include',
   })
 
   if (!response.ok) {
@@ -67,14 +79,12 @@ export async function getProfile() {
 }
 
 export async function updateProfile(data: { username?: string; email?: string }) {
-  const token = localStorage.getItem('auth_token')
-  
-  const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+  const response = await fetch(`${API_BASE_URL}/profile`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
     },
+    credentials: 'include',
     body: JSON.stringify(data),
   })
 
@@ -86,14 +96,12 @@ export async function updateProfile(data: { username?: string; email?: string })
 }
 
 export async function changePassword(data: { current_password: string; new_password: string }) {
-  const token = localStorage.getItem('auth_token')
-  
-  const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+  const response = await fetch(`${API_BASE_URL}/change-password`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
     },
+    credentials: 'include',
     body: JSON.stringify(data),
   })
 

@@ -18,8 +18,8 @@ export default function SignInPage() {
     setError('')
 
     try {
-      const { token } = await login(formData)
-      setAuthToken(token)
+      await login(formData)
+      // setAuthToken(token)
       router.push('/dashboard')
     } catch (err: any) {
       setError(err.message || 'Invalid email or password')

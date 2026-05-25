@@ -1,18 +1,28 @@
-export function setAuthToken(token: string) {
-  document.cookie = `auth_token=${token}; path=/; max-age=86400` // 24 hours
-  localStorage.setItem('auth_token', token)
+export function setAuthToken(_token: string) {
+  // No-op: auth cookie should be set by the backend via Set-Cookie
 }
 
-export function getAuthToken(): string | null {
-  if (typeof window === 'undefined') return null // SSR guard
-  return localStorage.getItem('auth_token')
+export function getAuthToken(): null {
+  // HttpOnly cookies cannot be read from JavaScript
+  return null
 }
 
 export function removeAuthToken() {
-  document.cookie = 'auth_token=; path=/; max-age=0' // clear cookie
-  localStorage.removeItem('auth_token')
+  // No-op: auth cookie should be cleared by calling the logout API
 }
 
-export function isAuthenticated(): boolean {
-  return !!getAuthToken()
+export async function isAuthenticated(): Promise<boolean> {
+  try {
+    const API_BASE_URL =
+      process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:4000/api'
+
+    const response = await fetch(`${API_BASE_URL}/me`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+
+    return response.ok
+  } catch {
+    return false
+  }
 }
