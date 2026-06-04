@@ -12,6 +12,7 @@ interface RegisterData {
 }
 
 interface AuthResponse {
+  data: any
   user?: {
     id: string | number
     email: string
@@ -22,7 +23,7 @@ interface AuthResponse {
 }
 
 export async function login(data: LoginData): Promise<AuthResponse> {
-  const response = await fetch(`${API_BASE_URL}/login`, {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -38,7 +39,7 @@ export async function login(data: LoginData): Promise<AuthResponse> {
 }
 
 export async function register(data: RegisterData): Promise<AuthResponse> {
-  const response = await fetch(`${API_BASE_URL}/register`, {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -54,7 +55,7 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
 }
 
 export async function logout() {
-  const response = await fetch(`${API_BASE_URL}/logout`, {
+  const response = await fetch(`${API_BASE_URL}/auth/logout`, {
     method: 'POST',
     credentials: 'include',
   })
@@ -67,7 +68,7 @@ export async function logout() {
 }
 
 export async function getProfile() {
-  const response = await fetch(`${API_BASE_URL}/profile`, {
+  const response = await fetch(`${API_BASE_URL}/auth/profile`, {
     credentials: 'include',
   })
 
@@ -79,7 +80,7 @@ export async function getProfile() {
 }
 
 export async function updateProfile(data: { username?: string; email?: string }) {
-  const response = await fetch(`${API_BASE_URL}/profile`, {
+  const response = await fetch(`${API_BASE_URL}/auth/profile`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -96,7 +97,7 @@ export async function updateProfile(data: { username?: string; email?: string })
 }
 
 export async function changePassword(data: { current_password: string; new_password: string }) {
-  const response = await fetch(`${API_BASE_URL}/change-password`, {
+  const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

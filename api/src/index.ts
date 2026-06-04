@@ -9,9 +9,9 @@ const origins = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3000,http://lo
 
 app.use('*', logger())
 app.use('*', cors({
-  origin: origins,
+  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization'],
-  allowMethods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true,
 }))
 

@@ -1,5 +1,6 @@
 export function setAuthToken(_token: string) {
-  // No-op: auth cookie should be set by the backend via Set-Cookie
+  localStorage.setItem('access_token', _token)
+  localStorage.setItem('token', _token)
 }
 
 export function getAuthToken(): null {
@@ -8,7 +9,8 @@ export function getAuthToken(): null {
 }
 
 export function removeAuthToken() {
-  // No-op: auth cookie should be cleared by calling the logout API
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('token')
 }
 
 export async function isAuthenticated(): Promise<boolean> {
@@ -16,9 +18,15 @@ export async function isAuthenticated(): Promise<boolean> {
     const API_BASE_URL =
       process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:4000/api'
 
-    const response = await fetch(`${API_BASE_URL}/me`, {
+    const token = localStorage.getItem('access_token')
+
+    if (!token) return false
+
+    const response = await fetch(`${API_BASE_URL}/auth/me`, {
       method: 'GET',
-      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
 
     return response.ok

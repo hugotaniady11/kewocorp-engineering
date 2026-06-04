@@ -24,7 +24,9 @@ export default function Sidebar() {
     <aside className="w-56 min-h-screen bg-white border-r flex flex-col">
       {/* Logo */}
       <div className="px-5 py-5 border-b">
-        <span className="font-semibold text-lg tracking-tight">Kewo Dashboard</span>
+        <span className="font-semibold text-lg tracking-tight">
+          <Link href="/dashboard">Kewo Dashboard</Link>
+        </span>
       </div>
 
       {/* Nav */}

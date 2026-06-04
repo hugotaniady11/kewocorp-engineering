@@ -1,20 +1,24 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { isAuthenticated } from '@/lib/auth'
 import Sidebar from '@/components/sidebar'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const [checking, setChecking] = useState(true)
 
-  // useEffect(() => {
-  //   if (!isAuthenticated()) {
-  //     router.replace('/sign-in')
-  //   }
-  // }, [router])
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.replace('/sign-in')
+      return
+    }
 
-  // if (!isAuthenticated()) return null // prevent flash
+    setChecking(false)
+  }, [router])
+
+  if (checking) return null
 
   return (
     <div className="flex min-h-screen bg-gray-50">

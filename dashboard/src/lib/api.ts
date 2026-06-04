@@ -6,42 +6,39 @@ interface ApiFetchOptions extends RequestInit {
   params?: Record<string, any>;
 }
 
-export async function apiFetch(
-  endpoint: string,
-  options?: ApiFetchOptions
-) {
-  const token = getAuthToken();
-  
-  // Build URL with query params
-  let url = `${API_BASE_URL}${endpoint}`;
-  if (options?.params) {
-    const searchParams = new URLSearchParams();
-    Object.entries(options.params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        searchParams.append(key, String(value));
-      }
-    });
-    const queryString = searchParams.toString();
-    if (queryString) url += `?${queryString}`;
-  }
+export async function apiFetch(path: string, options: RequestInit = {}) {
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api'
 
-  const response = await fetch(url, {
+  const token = localStorage.getItem('token')
+
+  console.log('token:', token)
+  console.log('url:', `${API_BASE_URL}${path}`)
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options?.headers,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
     },
-  });
+  })
+
+  const contentType = response.headers.get('content-type')
+  const data = contentType?.includes('application/json')
+    ? await response.json()
+    : await response.text()
+
+  console.log('status:', response.status)
+  console.log('response:', data)
 
   if (!response.ok) {
-    if (response.status === 401) {
-      if (typeof window !== 'undefined') {
-        window.location.href = '/sign-in';
-      }
-    }
-    throw new Error(`API Error: ${response.statusText}`);
+    throw new Error(
+      typeof data === 'string'
+        ? data
+        : data?.message || data?.error || `Request failed: ${response.status}`
+    )
   }
 
-  return response.json();
+  return data
 }

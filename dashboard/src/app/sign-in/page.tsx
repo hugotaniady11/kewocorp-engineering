@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { setAuthToken } from '@/lib/auth'
+import { isAuthenticated, setAuthToken } from '@/lib/auth'
 import { login } from '@/services/auth'
 
 export default function SignInPage() {
@@ -18,8 +18,14 @@ export default function SignInPage() {
     setError('')
 
     try {
-      await login(formData)
-      // setAuthToken(token)
+      const res = await login(formData)
+      const token = res?.data?.session?.access_token || res?.data?.access_token
+
+      if (!token) {
+        throw new Error('Access token not found')
+      }
+
+      setAuthToken(token)
       router.push('/dashboard')
     } catch (err: any) {
       setError(err.message || 'Invalid email or password')
@@ -27,6 +33,16 @@ export default function SignInPage() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (await isAuthenticated()) {
+        router.replace('/dashboard')
+      }
+    }
+
+    checkAuth()
+  }, [router])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

@@ -1,14 +1,30 @@
 import { apiFetch } from '@/lib/api';
 
 export async function getProjects(params?: {
-  featured?: boolean;
-  category?: string;
-  limit?: number;
+  featured?: boolean
+  category?: string
+  limit?: number
 }) {
-  return apiFetch('/projects', {
+  const searchParams = new URLSearchParams()
+
+  if (params?.featured !== undefined) {
+    searchParams.set('featured', String(params.featured))
+  }
+
+  if (params?.category) {
+    searchParams.set('category', params.category)
+  }
+
+  if (params?.limit !== undefined) {
+    searchParams.set('limit', String(params.limit))
+  }
+
+  const query = searchParams.toString()
+  const url = query ? `/projects?${query}` : '/projects'
+
+  return apiFetch(url, {
     method: 'GET',
-    params,
-  });
+  })
 }
 
 export async function getProjectById(id: number) {

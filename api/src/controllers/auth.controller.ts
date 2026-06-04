@@ -31,10 +31,18 @@ export async function logout(c: Context) {
 
 export async function me(c: Context) {
   try {
-    const token = c.req.header('Authorization')?.replace('Bearer ', '')
-    if (!token) return err(c, 'Unauthorized', 401)
+    const token = c.req.header('Authorization')?.replace('Bearer ', '').trim()
+
+    if (!token) {
+      return err(c, 'Unauthorized', 401)
+    }
 
     const user = await AuthService.getUserFromToken(token)
+
+    if (!user) {
+      return err(c, 'Unauthorized', 401)
+    }
+
     return ok(c, { user })
   } catch {
     return err(c, 'Unauthorized', 401)
