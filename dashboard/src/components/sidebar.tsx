@@ -8,6 +8,7 @@ import clsx from 'clsx'
 const navItems = [
   { label: 'Projects', href: '/dashboard/projects' },
   { label: 'Services', href: '/dashboard/services' },
+  { label: 'RFP', href: '/dashboard/rfp' },
   { label: 'Profile', href: '/dashboard/profile' },
 ]
 
