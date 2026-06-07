@@ -4,6 +4,7 @@ import { logger } from 'hono/logger'
 import { projectsRoute } from './routes/projects.route.js'
 import { servicesRoute } from './routes/services.route.js'
 import { authRoute } from './routes/auth.route.js'
+import { utilsRoute } from './routes/utils.route.js'
 const app = new Hono().basePath('/api')
 const origins = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3000,http://localhost:3001').split(',')
 
@@ -18,6 +19,7 @@ app.use('*', cors({
 app.route('/projects', projectsRoute)
 app.route('/services', servicesRoute)
 app.route('/auth', authRoute)
+app.route('/utils', utilsRoute)
 
 app.get('/health', (c) =>
   c.json({

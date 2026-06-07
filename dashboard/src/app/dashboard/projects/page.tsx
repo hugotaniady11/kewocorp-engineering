@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { getProjects, createProject, updateProject, deleteProject } from '@/services/projects'
+import { uploadProjectAsset } from '@/services/upload'
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<any[]>([])
@@ -21,6 +22,11 @@ export default function ProjectsPage() {
     featured: false,
     order_index: 0,
   })
+
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [videoFile, setVideoFile] = useState<File | null>(null)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [uploadingVideo, setUploadingVideo] = useState(false)
 
   useEffect(() => {
     loadProjects()
@@ -48,6 +54,7 @@ export default function ProjectsPage() {
   }
 
   function resetForm() {
+    setEditingProject(null)
     setFormData({
       title: '',
       slug: '',
@@ -60,6 +67,9 @@ export default function ProjectsPage() {
       featured: false,
       order_index: 0,
     })
+    setImageFile(null)
+    setVideoFile(null)
+    setIsOpen(true)
   }
 
   function closePanel() {
@@ -68,9 +78,7 @@ export default function ProjectsPage() {
   }
 
   function openCreate() {
-    setEditingProject(null)
     resetForm()
-    setIsOpen(true)
   }
 
   function openEdit(project: any) {
@@ -87,6 +95,8 @@ export default function ProjectsPage() {
       featured: !!project.featured,
       order_index: project.order_index ?? 0,
     })
+    setImageFile(null)
+    setVideoFile(null)
     setIsOpen(true)
   }
 
@@ -94,15 +104,32 @@ export default function ProjectsPage() {
     e.preventDefault()
     setSaving(true)
 
-    const payload = {
-      ...formData,
-      order_index: Number(formData.order_index) || 0,
-      tags: formData.tags
-        ? formData.tags.split(',').map((t) => t.trim()).filter(Boolean)
-        : [],
-    }
-
     try {
+      let imageUrl = formData.image_url
+      let videoUrl = formData.video_url
+
+      if (imageFile) {
+        setUploadingImage(true)
+        const uploadedImage = await uploadProjectAsset(imageFile, 'image')
+        imageUrl = uploadedImage.data.url
+      }
+
+      if (videoFile) {
+        setUploadingVideo(true)
+        const uploadedVideo = await uploadProjectAsset(videoFile, 'video')
+        videoUrl = uploadedVideo.data.url
+      }
+
+      const payload = {
+        ...formData,
+        image_url: imageUrl,
+        video_url: videoUrl,
+        order_index: Number(formData.order_index) || 0,
+        tags: formData.tags
+          ? formData.tags.split(',').map((t) => t.trim()).filter(Boolean)
+          : [],
+      }
+
       if (editingProject) {
         await updateProject(editingProject.id, payload)
       } else {
@@ -115,6 +142,8 @@ export default function ProjectsPage() {
       console.error(error)
       alert('Failed to save project')
     } finally {
+      setUploadingImage(false)
+      setUploadingVideo(false)
       setSaving(false)
     }
   }
@@ -326,27 +355,35 @@ export default function ProjectsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Image URL</label>
+                    <label className="block text-sm font-medium mb-1">Project Image</label>
                     <input
-                      type="url"
-                      value={formData.image_url}
-                      onChange={(e) =>
-                        setFormData({ ...formData, image_url: e.target.value })
-                      }
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImageFile(e.target.files?.[0] || null)}
                       className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
+                    {formData.image_url && !imageFile && (
+                      <p className="mt-1 text-xs text-gray-500">Current: {formData.image_url}</p>
+                    )}
+                    {imageFile && (
+                      <p className="mt-1 text-xs text-gray-500">Selected: {imageFile.name}</p>
+                    )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Video URL</label>
+                    <label className="block text-sm font-medium mb-1">Project Video</label>
                     <input
-                      type="url"
-                      value={formData.video_url}
-                      onChange={(e) =>
-                        setFormData({ ...formData, video_url: e.target.value })
-                      }
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
                       className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
+                    {formData.video_url && !videoFile && (
+                      <p className="mt-1 text-xs text-gray-500">Current: {formData.video_url}</p>
+                    )}
+                    {videoFile && (
+                      <p className="mt-1 text-xs text-gray-500">Selected: {videoFile.name}</p>
+                    )}
                   </div>
 
                   <div>
@@ -400,10 +437,10 @@ export default function ProjectsPage() {
                 <div className="shrink-0 border-t px-6 py-4 flex gap-3 bg-white">
                   <button
                     type="submit"
-                    disabled={saving}
+                    disabled={saving || uploadingImage || uploadingVideo}
                     className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
                   >
-                    {saving ? 'Saving...' : 'Save'}
+                    {saving || uploadingImage || uploadingVideo ? 'Saving...' : 'Save'}
                   </button>
 
                   <button
