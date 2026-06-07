@@ -1,14 +1,13 @@
 import { getAuthToken } from './auth';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface ApiFetchOptions extends RequestInit {
   params?: Record<string, any>;
 }
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000/api'
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
   const token = localStorage.getItem('token')
 
