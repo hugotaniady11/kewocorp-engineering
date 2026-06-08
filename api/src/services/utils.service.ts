@@ -1,21 +1,22 @@
 import { supabase } from '../lib/supabase.js'
 
 export async function uploadFile(payload: Record<string, unknown>) {
-  const file = payload.file
-  const type = payload.type
+  const rawFile = Array.isArray(payload.file) ? payload.file[0] : payload.file
+  const type = payload.type === 'video' ? 'video' : 'image'
 
-  if (!(file instanceof File)) {
+  if (
+    !rawFile ||
+    typeof rawFile !== 'object' ||
+    typeof (rawFile as any).arrayBuffer !== 'function'
+  ) {
     throw new Error('File is required')
   }
 
-  const uploadType = type === 'video' ? 'video' : 'image'
-
-  if (uploadType === 'image' && !file.type.startsWith('image/')) {
-    throw new Error('Uploaded file must be an image')
-  }
-
-  if (uploadType === 'video' && !file.type.startsWith('video/')) {
-    throw new Error('Uploaded file must be a video')
+  const file = rawFile as {
+    name: string
+    type: string
+    size: number
+    arrayBuffer: () => Promise<ArrayBuffer>
   }
 
   const ext = file.name.includes('.') ? file.name.split('.').pop() : ''
@@ -25,10 +26,9 @@ export async function uploadFile(payload: Record<string, unknown>) {
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-_]/g, '')
 
-  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}-${cleanName}.${ext || (uploadType === 'image' ? 'jpg' : 'mp4')}`
-
+  const fileName = `${Date.now()}-${cleanName}.${ext || (type === 'image' ? 'jpg' : 'mp4')}`
   const filePath =
-    uploadType === 'image'
+    type === 'image'
       ? `projects/images/${fileName}`
       : `projects/videos/${fileName}`
 
@@ -48,9 +48,9 @@ export async function uploadFile(payload: Record<string, unknown>) {
   const { data } = supabase.storage.from('media').getPublicUrl(filePath)
 
   return {
-    type: uploadType,
+    url: data.publicUrl,
     file_name: fileName,
     file_path: filePath,
-    url: data.publicUrl,
+    type,
   }
 }

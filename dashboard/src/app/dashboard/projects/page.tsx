@@ -363,7 +363,14 @@ export default function ProjectsPage() {
                       className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {formData.image_url && !imageFile && (
-                      <p className="mt-1 text-xs text-gray-500">Current: {formData.image_url}</p>
+                      <a
+                        href={formData.image_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 block text-xs text-blue-600 hover:underline"
+                      >
+                        Current: {formData.image_url}
+                      </a>
                     )}
                     {imageFile && (
                       <p className="mt-1 text-xs text-gray-500">Selected: {imageFile.name}</p>
@@ -379,7 +386,14 @@ export default function ProjectsPage() {
                       className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                     {formData.video_url && !videoFile && (
-                      <p className="mt-1 text-xs text-gray-500">Current: {formData.video_url}</p>
+                      <a
+                        href={formData.video_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 block text-xs text-blue-600 hover:underline break-all"
+                      >
+                        Current: {formData.video_url}
+                      </a>
                     )}
                     {videoFile && (
                       <p className="mt-1 text-xs text-gray-500">Selected: {videoFile.name}</p>
