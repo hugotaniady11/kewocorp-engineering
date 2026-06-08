@@ -1,27 +1,61 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { getProjects, createProject, updateProject, deleteProject } from '@/services/projects'
+import React, { useEffect, useState } from 'react'
+import {
+  getProjects,
+  createProject,
+  updateProject,
+  deleteProject,
+} from '@/services/projects'
 import { uploadProjectAsset } from '@/services/upload'
 
+type Project = {
+  id: number
+  title?: string
+  slug?: string
+  client?: string | null
+  description?: string | null
+  image_url?: string | null
+  video_url?: string | null
+  category?: string | null
+  tags?: string[] | null
+  featured?: boolean
+  order_index?: number
+}
+
+type ProjectFormData = {
+  title: string
+  slug: string
+  client: string
+  description: string
+  image_url: string
+  video_url: string
+  category: string
+  tags: string
+  featured: boolean
+  order_index: number
+}
+
+const initialFormData: ProjectFormData = {
+  title: '',
+  slug: '',
+  client: '',
+  description: '',
+  image_url: '',
+  video_url: '',
+  category: '',
+  tags: '',
+  featured: false,
+  order_index: 0,
+}
+
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<any[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
-  const [editingProject, setEditingProject] = useState<any>(null)
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [saving, setSaving] = useState(false)
-  const [formData, setFormData] = useState({
-    title: '',
-    slug: '',
-    client: '',
-    description: '',
-    image_url: '',
-    video_url: '',
-    category: '',
-    tags: '',
-    featured: false,
-    order_index: 0,
-  })
+  const [formData, setFormData] = useState<ProjectFormData>(initialFormData)
 
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [videoFile, setVideoFile] = useState<File | null>(null)
@@ -48,6 +82,9 @@ export default function ProjectsPage() {
     try {
       const data = await getProjects()
       setProjects(data.data || [])
+    } catch (error) {
+      console.error(error)
+      alert('Failed to load projects')
     } finally {
       setLoading(false)
     }
@@ -55,33 +92,28 @@ export default function ProjectsPage() {
 
   function resetForm() {
     setEditingProject(null)
-    setFormData({
-      title: '',
-      slug: '',
-      client: '',
-      description: '',
-      image_url: '',
-      video_url: '',
-      category: '',
-      tags: '',
-      featured: false,
-      order_index: 0,
-    })
+    setFormData(initialFormData)
     setImageFile(null)
     setVideoFile(null)
+    setUploadingImage(false)
+    setUploadingVideo(false)
     setIsOpen(true)
   }
 
   function closePanel() {
     setIsOpen(false)
     setEditingProject(null)
+    setImageFile(null)
+    setVideoFile(null)
+    setUploadingImage(false)
+    setUploadingVideo(false)
   }
 
   function openCreate() {
     resetForm()
   }
 
-  function openEdit(project: any) {
+  function openEdit(project: Project) {
     setEditingProject(project)
     setFormData({
       title: project.title || '',
@@ -97,6 +129,8 @@ export default function ProjectsPage() {
     })
     setImageFile(null)
     setVideoFile(null)
+    setUploadingImage(false)
+    setUploadingVideo(false)
     setIsOpen(true)
   }
 
@@ -111,13 +145,13 @@ export default function ProjectsPage() {
       if (imageFile) {
         setUploadingImage(true)
         const uploadedImage = await uploadProjectAsset(imageFile, 'image')
-        imageUrl = uploadedImage.data.url
+        imageUrl = uploadedImage.url
       }
 
       if (videoFile) {
         setUploadingVideo(true)
         const uploadedVideo = await uploadProjectAsset(videoFile, 'video')
-        videoUrl = uploadedVideo.data.url
+        videoUrl = uploadedVideo.url
       }
 
       const payload = {
@@ -126,7 +160,10 @@ export default function ProjectsPage() {
         video_url: videoUrl,
         order_index: Number(formData.order_index) || 0,
         tags: formData.tags
-          ? formData.tags.split(',').map((t) => t.trim()).filter(Boolean)
+          ? formData.tags
+              .split(',')
+              .map((t) => t.trim())
+              .filter(Boolean)
           : [],
       }
 
@@ -140,7 +177,7 @@ export default function ProjectsPage() {
       closePanel()
     } catch (error) {
       console.error(error)
-      alert('Failed to save project')
+      alert(error instanceof Error ? error.message : 'Failed to save project')
     } finally {
       setUploadingImage(false)
       setUploadingVideo(false)
@@ -153,7 +190,7 @@ export default function ProjectsPage() {
 
     try {
       await deleteProject(id)
-      setProjects(projects.filter((p) => p.id !== id))
+      setProjects((prev) => prev.filter((p) => p.id !== id))
     } catch (error) {
       console.error(error)
       alert('Failed to delete')
@@ -162,7 +199,7 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-500">
+      <div className="flex h-64 items-center justify-center text-gray-500">
         Loading...
       </div>
     )
@@ -171,44 +208,44 @@ export default function ProjectsPage() {
   return (
     <>
       <div>
-        <div className="flex justify-between items-center mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Projects</h1>
           <button
             onClick={openCreate}
-            className="bg-kewo-navy text-white px-4 py-2 rounded-lg hover:bg-kewo-navy-light transition-colors text-sm font-medium"
+            className="rounded-lg bg-kewo-navy px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-kewo-navy-light"
           >
             + New Project
           </button>
         </div>
 
         {projects.length === 0 ? (
-          <div className="bg-white border rounded-lg p-12 text-center">
-            <p className="text-gray-500 mb-4">No projects yet</p>
+          <div className="rounded-lg border bg-white p-12 text-center">
+            <p className="mb-4 text-gray-500">No projects yet</p>
             <button
               onClick={openCreate}
-              className="bg-kewo-navy text-white px-4 py-2 rounded-lg hover:bg-kewo-navy-light transition-colors text-sm font-medium"
+              className="rounded-lg bg-kewo-navy px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-kewo-navy-light"
             >
               Create your first project
             </button>
           </div>
         ) : (
-          <div className="bg-white border rounded-lg overflow-hidden">
+          <div className="overflow-hidden rounded-lg border bg-white">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b">
+              <thead className="border-b bg-gray-50">
                 <tr>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
                     Title
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
                     Client
                   </th>
-                  <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
                     Category
                   </th>
-                  <th className="text-center px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-center text-xs font-medium uppercase text-gray-500">
                     Featured
                   </th>
-                  <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase text-gray-500">
                     Actions
                   </th>
                 </tr>
@@ -218,31 +255,31 @@ export default function ProjectsPage() {
                 {projects.map((project) => (
                   <tr key={project.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 font-medium">{project.title}</td>
-                    <td className="px-6 py-4 text-gray-600 text-sm">
+                    <td className="px-6 py-4 text-sm text-gray-600">
                       {project.client || '—'}
                     </td>
-                    <td className="px-6 py-4 text-gray-600 text-sm">
+                    <td className="px-6 py-4 text-sm text-gray-600">
                       {project.category || '—'}
                     </td>
                     <td className="px-6 py-4 text-center">
                       {project.featured ? (
-                        <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
+                        <span className="inline-flex rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700">
                           Featured
                         </span>
                       ) : (
                         '—'
                       )}
                     </td>
-                    <td className="px-6 py-4 text-right space-x-3">
+                    <td className="space-x-3 px-6 py-4 text-right">
                       <button
                         onClick={() => openEdit(project)}
-                        className="text-kewo-navy hover:text-kewo-navy-light text-sm font-medium"
+                        className="text-sm font-medium text-kewo-navy hover:text-kewo-navy-light"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(project.id)}
-                        className="text-red-600 hover:text-red-700 text-sm font-medium"
+                        className="text-sm font-medium text-red-600 hover:text-red-700"
                       >
                         Delete
                       </button>
@@ -264,7 +301,7 @@ export default function ProjectsPage() {
 
           <div className="absolute inset-y-0 right-0 w-full max-w-md bg-white shadow-xl">
             <div className="flex h-full flex-col">
-              <div className="shrink-0 border-b px-6 py-4 flex items-center justify-between">
+              <div className="flex shrink-0 items-center justify-between border-b px-6 py-4">
                 <h2 className="text-lg font-semibold">
                   {editingProject ? 'Edit Project' : 'New Project'}
                 </h2>
@@ -275,7 +312,7 @@ export default function ProjectsPage() {
                   type="button"
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="h-6 w-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -291,9 +328,9 @@ export default function ProjectsPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
-                <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6 space-y-4">
+                <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-6">
                   <div>
-                    <label className="block text-sm font-medium mb-1">Title *</label>
+                    <label className="mb-1 block text-sm font-medium">Title *</label>
                     <input
                       type="text"
                       required
@@ -301,12 +338,12 @@ export default function ProjectsPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
                       }
-                      className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Slug *</label>
+                    <label className="mb-1 block text-sm font-medium">Slug *</label>
                     <input
                       type="text"
                       required
@@ -314,94 +351,104 @@ export default function ProjectsPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, slug: e.target.value })
                       }
-                      className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
+                      className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Client</label>
+                    <label className="mb-1 block text-sm font-medium">Client</label>
                     <input
                       type="text"
                       value={formData.client}
                       onChange={(e) =>
                         setFormData({ ...formData, client: e.target.value })
                       }
-                      className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Category</label>
+                    <label className="mb-1 block text-sm font-medium">Category</label>
                     <input
                       type="text"
                       value={formData.category}
                       onChange={(e) =>
                         setFormData({ ...formData, category: e.target.value })
                       }
-                      className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Description</label>
+                    <label className="mb-1 block text-sm font-medium">Description</label>
                     <textarea
                       value={formData.description}
                       onChange={(e) =>
                         setFormData({ ...formData, description: e.target.value })
                       }
-                      className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
                       rows={3}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Project Image</label>
+                    <label className="mb-1 block text-sm font-medium">Project Image</label>
                     <input
                       type="file"
                       accept="image/*"
                       onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                      className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
                     />
+                    {uploadingImage && (
+                      <p className="mt-1 text-xs text-gray-500">Uploading image...</p>
+                    )}
                     {formData.image_url && !imageFile && (
                       <a
                         href={formData.image_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-1 block text-xs text-blue-600 hover:underline"
+                        className="mt-1 block break-all text-xs text-blue-600 hover:underline"
                       >
                         Current: {formData.image_url}
                       </a>
                     )}
                     {imageFile && (
-                      <p className="mt-1 text-xs text-gray-500">Selected: {imageFile.name}</p>
+                      <p className="mt-1 text-xs text-gray-500">
+                        Selected: {imageFile.name}
+                      </p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Project Video</label>
+                    <label className="mb-1 block text-sm font-medium">Project Video</label>
                     <input
                       type="file"
                       accept="video/*"
                       onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
-                      className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
                     />
+                    {uploadingVideo && (
+                      <p className="mt-1 text-xs text-gray-500">Uploading video...</p>
+                    )}
                     {formData.video_url && !videoFile && (
                       <a
                         href={formData.video_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-1 block text-xs text-blue-600 hover:underline break-all"
+                        className="mt-1 block break-all text-xs text-blue-600 hover:underline"
                       >
                         Current: {formData.video_url}
                       </a>
                     )}
                     {videoFile && (
-                      <p className="mt-1 text-xs text-gray-500">Selected: {videoFile.name}</p>
+                      <p className="mt-1 text-xs text-gray-500">
+                        Selected: {videoFile.name}
+                      </p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">
+                    <label className="mb-1 block text-sm font-medium">
                       Tags (comma-separated)
                     </label>
                     <input
@@ -410,13 +457,13 @@ export default function ProjectsPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, tags: e.target.value })
                       }
-                      className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
                       placeholder="web, mobile, design"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Order Index</label>
+                    <label className="mb-1 block text-sm font-medium">Order Index</label>
                     <input
                       type="number"
                       value={formData.order_index}
@@ -426,7 +473,7 @@ export default function ProjectsPage() {
                           order_index: Number(e.target.value),
                         })
                       }
-                      className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full rounded border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-kewo-navy"
                     />
                   </div>
 
@@ -441,18 +488,18 @@ export default function ProjectsPage() {
                             featured: e.target.checked,
                           })
                         }
-                        className="w-4 h-4 rounded"
+                        className="h-4 w-4 rounded"
                       />
                       <span className="text-sm font-medium">Featured</span>
                     </label>
                   </div>
                 </div>
 
-                <div className="shrink-0 border-t px-6 py-4 flex gap-3 bg-white">
+                <div className="flex shrink-0 gap-3 border-t bg-white px-6 py-4">
                   <button
                     type="submit"
                     disabled={saving || uploadingImage || uploadingVideo}
-                    className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
+                    className="flex-1 rounded-lg bg-kewo-navy py-2 font-medium text-white hover:bg-kewo-navy-light disabled:opacity-50"
                   >
                     {saving || uploadingImage || uploadingVideo ? 'Saving...' : 'Save'}
                   </button>
@@ -460,7 +507,7 @@ export default function ProjectsPage() {
                   <button
                     type="button"
                     onClick={closePanel}
-                    className="px-4 border rounded-lg hover:bg-gray-50"
+                    className="rounded-lg border px-4 hover:bg-gray-50"
                   >
                     Cancel
                   </button>
