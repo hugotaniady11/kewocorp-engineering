@@ -220,7 +220,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white py-12">
+      {/* <section className="bg-white py-12">
         <div className="container-default text-center">
           <h2 className="text-kewo-navy font-extrabold text-2xl md:text-3xl uppercase tracking-wide mb-4">
             Ready to Start Your Next Project?
@@ -236,7 +236,7 @@ export default async function HomePage() {
             Get In Touch
           </a>
         </div>
-      </section>
+      </section> */}
     </>
   )
 }
