@@ -162,7 +162,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
         </div>
       </section>
 
-      <section className="bg-kewo-navy py-12">
+      {/* <section className="bg-kewo-navy py-12">
         <div className="container-default text-center">
           <h2 className="text-white font-extrabold text-2xl md:text-3xl uppercase tracking-wide mb-4">
             Have a Project in Mind?
@@ -177,7 +177,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
             Contact Us
           </a>
         </div>
-      </section>
+      </section> */}
     </>
   )
 }
