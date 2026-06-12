@@ -16,7 +16,22 @@ export default function HeroSection() {
       {/* Background */}
       <div className={clsx('absolute inset-0', SLIDE.bg)} />
 
-      {/* Subtle grid overlay */}
+      <video
+        className="absolute inset-0 h-full w-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+      >
+        <source
+          src="https://kewocorp.com/wp-content/uploads/2026/06/Home-Slider-Comp-Dark.mp4"
+          type="video/mp4"
+        />
+      </video>
+
+      <div className="absolute inset-0 bg-black/45" />
+
       <div
         className="absolute inset-0 opacity-10"
         style={{
@@ -24,11 +39,6 @@ export default function HeroSection() {
         }}
       />
 
-      {/* Accent lines */}
-      {/* <div className="absolute bottom-0 right-0 w-1/2 h-2 bg-kewo-light opacity-60" />
-      <div className="absolute bottom-0 left-0 w-1/3 h-1 bg-kewo-light opacity-30" /> */}
-
-      {/* Content */}
       <div className="relative z-10 container-default w-full pt-20">
         <div>
           {/* Eyebrow */}
